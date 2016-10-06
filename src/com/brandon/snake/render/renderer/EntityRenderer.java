@@ -9,10 +9,9 @@ import com.brandon.snake.graphics.Mesh;
 import com.brandon.snake.graphics.Shader;
 import com.brandon.snake.math.Matrix4f;
 import com.brandon.snake.math.Vector3f;
-import com.brandon.snake.render.Renderer;
 import com.brandon.snake.util.MeshUtil;
 
-public class EntityRenderer implements Renderer {
+public class EntityRenderer extends CellRenderer {
 	//Constants
 	final private static Vector3f POISON_COLOR = new Vector3f(1, 0, 0);
 	final private static Vector3f FOOD_COLOR = new Vector3f(0, 1, 0);
@@ -67,12 +66,12 @@ public class EntityRenderer implements Renderer {
 		
 		Cell poison = game.getAddedPoison();
 		if (poison != null) {
-			poisonModels.add(MeshUtil.getCellTranslation(poison));
+			poisonModels.add(getCellTranslation(poison));
 		}
 		
 		Cell food = game.getAddedFood();
 		if (food != null) {
-			foodModel = MeshUtil.getCellTranslation(food);
+			foodModel = getCellTranslation(food);
 		}
 	}
 	

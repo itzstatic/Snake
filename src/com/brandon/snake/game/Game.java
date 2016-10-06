@@ -12,8 +12,8 @@ import com.brandon.snake.util.schedule.Scheduler;
 public class Game {
 	//Game constants
 	final private static long POISON_GENERATION_DELAY = 2500; //ms 2500
-    final private static int INITIAL_SIZE = 3; //Of the snake before any food
-    final private static int GROWTH = 3; //The size added to the snake after eating
+	final private static int INITIAL_SIZE = 3; //Of the snake before any food
+	final private static int GROWTH = 3; //The size added to the snake after eating
 	
 	//Poison generation
 	private Scheduler poisonScheduler;

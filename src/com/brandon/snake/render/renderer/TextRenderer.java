@@ -35,7 +35,7 @@ public class TextRenderer implements Renderer {
 	
 	@Override
 	public void reset() {
-		
+		score = 0;
 	}
 	
 	@Override
@@ -58,8 +58,8 @@ public class TextRenderer implements Renderer {
 		int newScore = game.getScore();
 		if (score < newScore) {
 			font.destroyString(Integer.toString(score));
-			score = newScore;
 		}
+		score = newScore;
 	}
 	
 	@Override

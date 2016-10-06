@@ -13,10 +13,9 @@ import com.brandon.snake.graphics.texture.TextureAtlas;
 import com.brandon.snake.math.Matrix4f;
 import com.brandon.snake.math.Vector3f;
 import com.brandon.snake.render.GameOverHandler;
-import com.brandon.snake.render.Renderer;
 import com.brandon.snake.util.MeshUtil;
 
-public class SnakeRenderer implements Renderer {
+public class SnakeRenderer extends CellRenderer {
 	//Constants
 	final private static Vector3f COLOR = new Vector3f(0, 1, 1);
 
@@ -78,7 +77,7 @@ public class SnakeRenderer implements Renderer {
 		shader = new Shader("res/shaders/segment.vs", "res/shaders/segment.fs");
 		shader.setUniformMat4f("proj", Matrix4f.orthographic(0, GAME_WIDTH, 0, GAME_HEIGHT, 1, -1));
 		for (int i = 0; i < meshes.length; i++) {
-			meshes[i] = MeshUtil.createSegmentMesh(-.5f, -.5f, .5f, .5f, texture.getTextureCoords(i));
+			meshes[i] = MeshUtil.createTexturedMesh(-.5f, -.5f, .5f, .5f, texture.getTextureCoords(i));
 		}
 	}
 	
@@ -146,14 +145,14 @@ public class SnakeRenderer implements Renderer {
 		if (!models.isEmpty() || !indices.isEmpty()) {
 			//Redraw old head as body (Rotate model, set texture index)
 			models.removeFirst();
-			models.addFirst(MeshUtil.getCellTranslation(head).mul(Matrix4f.rotateZ(BODY_ROTATIONS[old][nu]))); //Rotate model
+			models.addFirst(getCellTranslation(head).mul(Matrix4f.rotateZ(BODY_ROTATIONS[old][nu]))); //Rotate model
 			indices.removeFirst(); //Change its texture index
 			indices.addFirst(BODY_INDICES[old][nu]);
 		}
 		
 		//Draw new head
 		head = segment;
-		models.addFirst(MeshUtil.getCellTranslation(segment).mul(Matrix4f.rotateZ(HEAD_ROTATIONS[nu])));
+		models.addFirst(getCellTranslation(segment).mul(Matrix4f.rotateZ(HEAD_ROTATIONS[nu])));
 		indices.addFirst(HEAD_INDICES[nu]);
 	}
 	

@@ -159,7 +159,7 @@ public class BitmapFont {
 	/**
 	 * Creates a mesh of some text centered at the origin
 	 * @param lines array of the lines
-	 * @param length the number of characters; sum lines[i].length()
+	 * @param boxes the number of characters; sum lines[i].length()
 	 * @return the mesh
 	 */
 	private Mesh createMesh(String[] lines, int boxes) {
@@ -170,8 +170,6 @@ public class BitmapFont {
 		int box = 0; //Character index
 		for (int i = 0; i < lines.length; i++) {
 //			//Top left of this line (Top left of first line is at origin)
-//			float x = - (lines[i].length() - lines[0].length()) / 2;
-//			float y = - i;
 			float x = - (float) lines[i].length() / 2;
 			float y = (float) lines.length / 2 - i;
 			
@@ -211,8 +209,6 @@ public class BitmapFont {
 	 * @param vertices positions in buffer
 	 * @param x left of this character
 	 * @param y top of this character
-	 * @param w width of this character
-	 * @param h height of this character
 	 */
 	private void putVerticies(FloatBuffer vertices, float x, float y) {
 		//top left, CCW
@@ -257,7 +253,6 @@ public class BitmapFont {
 			meshCache.remove(s).destroy();
 		}
 		
-		System.out.println("Destroyed " + s + ": " + meshCache.size());
 	}
 	
 	public void destroy() {
