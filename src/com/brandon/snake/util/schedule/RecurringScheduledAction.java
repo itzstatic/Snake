@@ -1,6 +1,5 @@
 package com.brandon.snake.util.schedule;
 
-import com.brandon.snake.util.Time;
 
 
 public class RecurringScheduledAction extends ScheduledAction {
@@ -20,19 +19,20 @@ public class RecurringScheduledAction extends ScheduledAction {
 	
 	@Override
 	public void postpone() {
-		timeAdded = Time.getTimeMilliseconds();
-		lastRun = Time.getTimeMilliseconds();
+		timeAdded = System.currentTimeMillis();
+		lastRun = System.currentTimeMillis();
 	}
 	
 	@Override
 	void run() {
 		runnable.run();
-		lastRun = Time.getTimeMilliseconds();
+		lastRun = System.currentTimeMillis();
 	}
 
 	@Override
 	boolean shouldRun() {
-		return Time.getTimeMilliseconds() - lastRun >= period && Time.getTimeMilliseconds() - timeAdded >= initialDelay;
+		long currentTime = System.currentTimeMillis();
+		return currentTime - lastRun >= period && currentTime - timeAdded >= initialDelay;
 	}
 
 }

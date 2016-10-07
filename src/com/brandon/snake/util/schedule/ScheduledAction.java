@@ -20,4 +20,5 @@ public abstract class ScheduledAction {
 	
 	abstract void run();
 	abstract boolean shouldRun();
+
 }

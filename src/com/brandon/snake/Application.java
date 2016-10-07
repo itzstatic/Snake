@@ -44,7 +44,6 @@ import org.lwjgl.opengl.GL;
 import com.brandon.snake.game.Game;
 import com.brandon.snake.input.Input;
 import com.brandon.snake.render.GameRenderer;
-import com.brandon.snake.util.Time;
  
 public class Application {
  
@@ -138,8 +137,7 @@ public class Application {
     private void loop() {
     	double initialTime;
         while (!glfwWindowShouldClose(window)) {
-        	initialTime = Time.getTimeMilliseconds();
-        	Time.update();
+        	initialTime = System.currentTimeMillis();
         	
         	//Game Update Cycle
         	
@@ -150,7 +148,7 @@ public class Application {
         		game.straighten();
         	}
         	
-            while (Time.getTimeMilliseconds() - initialTime < UPDATE_DELAY) {
+            while (System.currentTimeMillis() - initialTime < UPDATE_DELAY) {
             	//UI Update Cycle
             	glfwPollEvents();
             	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -166,7 +164,6 @@ public class Application {
         }
 	}
     
- 
     public static void main(String[] args) {
     	new Application().run();
     }

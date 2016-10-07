@@ -1,6 +1,6 @@
 package com.brandon.snake.util.schedule;
 
-import com.brandon.snake.util.Time;
+import java.sql.Time;
 
 public class OneTimeScheduledAction extends ScheduledAction {
 
@@ -16,7 +16,7 @@ public class OneTimeScheduledAction extends ScheduledAction {
 	
 	@Override
 	public void postpone() {
-		timeAdded = Time.getTimeMilliseconds();
+		timeAdded = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class OneTimeScheduledAction extends ScheduledAction {
 
 	@Override
 	boolean shouldRun() {
-		return Time.getTimeMilliseconds() - timeAdded >= initialDelay;
+		return System.currentTimeMillis() - timeAdded >= initialDelay;
 	}
 
 }

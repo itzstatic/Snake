@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.brandon.snake.util.Time;
-
 public class Scheduler {
 	
 	private List<ScheduledAction> actions;
@@ -34,7 +32,7 @@ public class Scheduler {
 		ScheduledAction action = new OneTimeScheduledAction(
 			runnable, 
 			TimeUnit.MILLISECONDS.convert(initialDelay, unit),
-			Time.getTimeMilliseconds()
+			System.currentTimeMillis()
 		);
 		actions.add(action);
 		return action;
@@ -45,9 +43,10 @@ public class Scheduler {
 			runnable, 
 			TimeUnit.MILLISECONDS.convert(initialDelay, unit), 
 			TimeUnit.MILLISECONDS.convert(period, unit),
-			Time.getTimeMilliseconds()
+			System.currentTimeMillis()
 		);
 		actions.add(action);
 		return action;
 	}
+	
 }
