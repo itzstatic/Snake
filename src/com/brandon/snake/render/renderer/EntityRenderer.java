@@ -42,10 +42,6 @@ public class EntityRenderer extends CellRenderer {
 		poisonRemoveAnimation = new PoisonRemoveAnimation(poisonModels);
 	}
 	
-	public void addPoison(Matrix4f poisonModel) {
-		
-	}
-	
 	@Override
 	public void init() {
 		shader = new Shader("res/shaders/entity.vs", "res/shaders/entity.fs");

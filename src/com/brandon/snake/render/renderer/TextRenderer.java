@@ -3,26 +3,23 @@ package com.brandon.snake.render.renderer;
 import com.brandon.snake.game.Game;
 import com.brandon.snake.graphics.BitmapFont;
 import com.brandon.snake.graphics.Shader;
-import com.brandon.snake.render.GameOverHandler;
 import com.brandon.snake.render.Renderer;
+import com.brandon.snake.render.renderer.text.GameOverAnimation;
 
 public class TextRenderer implements Renderer {
 	//Constants
 	final private int WINDOW_WIDTH;
 	final private int WINDOW_HEIGHT;
 	
-	//Read only
-	private GameOverHandler gameOverHandler;
-	
 	//Game State
 	private int score;
+	
+	private GameOverAnimation gameOverAnimation;
 	
 	//Rendering resources
 	private BitmapFont font;
 	
-	public TextRenderer(GameOverHandler gameOverHandler, int windowWidth, int windowHeight) {
-		this.gameOverHandler = gameOverHandler;
-		
+	public TextRenderer(int windowWidth, int windowHeight) {
 		WINDOW_WIDTH = windowWidth;
 		WINDOW_HEIGHT = windowHeight;
 	}
@@ -31,11 +28,13 @@ public class TextRenderer implements Renderer {
 	public void init() {
 		font = new BitmapFont("res/text.png", 16, 16, WINDOW_WIDTH, WINDOW_HEIGHT);
 		font.setShader(new Shader("res/shaders/text.vs", "res/shaders/text.fs"), 0, "tex");
+		gameOverAnimation = new GameOverAnimation(font);
 	}
 	
 	@Override
 	public void reset() {
 		score = 0;
+		gameOverAnimation.stop();
 	}
 	
 	@Override
@@ -48,9 +47,7 @@ public class TextRenderer implements Renderer {
 		if (game.isPaused()) {
 			font.drawString("Paused", 2);
 		}
-		if (gameOverHandler.isGameOverVisible()) {
-			font.drawString("Game Over!", 2);
-		}
+		gameOverAnimation.update();
 	}
 	
 	@Override
@@ -60,6 +57,10 @@ public class TextRenderer implements Renderer {
 			font.destroyString(Integer.toString(score));
 		}
 		score = newScore;
+		
+		if (game.onGameOver()) {
+			gameOverAnimation.start();
+		}
 	}
 	
 	@Override

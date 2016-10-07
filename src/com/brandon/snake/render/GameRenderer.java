@@ -8,17 +8,15 @@ import com.brandon.snake.render.renderer.TextRenderer;
 public class GameRenderer {
 
 	private Renderer[] renderers;
-	private GameOverHandler gameOverHandler;
 	private Game game;
 	
 	public GameRenderer(Game game, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 		this.game = game;
-		gameOverHandler = new GameOverHandler();
 		
 		renderers = new Renderer[]{
-			new SnakeRenderer(gameOverHandler, gameWidth, gameHeight),
+			new SnakeRenderer(gameWidth, gameHeight),
 			new EntityRenderer(gameWidth, gameHeight),
-			new TextRenderer(gameOverHandler, windowWidth, windowHeight)
+			new TextRenderer(windowWidth, windowHeight)
 		};
 	}
 
@@ -29,14 +27,12 @@ public class GameRenderer {
 	}
 
 	public void reset() {
-		gameOverHandler.reset();
 		for (Renderer renderer : renderers) {
 			renderer.reset();
 		}
 	}
 
 	public void render() {
-		gameOverHandler.update(); //Even when the game is paused
 		for (Renderer renderer : renderers) {
 			renderer.render(game);
 		}

@@ -21,7 +21,7 @@ public class PoisonRemoveAnimation extends Animation {
 	}
 
 	@Override
-	protected void onStart() {
+	protected void onBegin() {
 
 	}
 
@@ -34,13 +34,21 @@ public class PoisonRemoveAnimation extends Animation {
 	}
 
 	@Override
-	protected void onStop() {
+	protected void onEnd() {
 		models.removeFirst();
 	}
 
 	@Override
+	public long getInitialDelay() {
+		return 0;
+	}
+
+	@Override
+	public long getDelay() {
+		return 0;
+	}
+	@Override
 	public long getDuration() {
 		return DURATION;
 	}
-
 }

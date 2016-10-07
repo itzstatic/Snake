@@ -23,7 +23,7 @@ public class PoisonAddAnimation extends Animation {
 	}
 	
 	@Override
-	protected void onStart() {
+	protected void onBegin() {
 		
 	}
 	
@@ -36,12 +36,23 @@ public class PoisonAddAnimation extends Animation {
 	}
 
 	@Override
-	protected void onStop() {
-		model = translation;
+	protected void onEnd() {
+		models.removeLast();
+		models.addLast(translation);
 	}
 
+	@Override
+	public long getInitialDelay() {
+		return 0;
+	}
+
+	@Override
+	public long getDelay() {
+		return 0;
+	}
 	@Override
 	public long getDuration() {
 		return DURATION;
 	}
+
 }

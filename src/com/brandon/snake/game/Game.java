@@ -32,7 +32,13 @@ public class Game {
 	private Direction previousDir; //Directions should never be null
 	private Direction currentDir;
 	
-	//Delta game state (Consumed by access)
+	//Reset changes this, but it is represented by delta state.
+	//So reset queues it so that update can change it.
+	private Cell resetFood;
+	private Cell resetSegment;
+	
+	//Delta game state (Defaults at beginning of update)
+	//Can only be set inside of update method
 	//Default values: null, false, where applicable
 	private Cell addedFood;
 	private Cell addedSegment;
@@ -68,11 +74,19 @@ public class Game {
 	}
 	
 	public void update() {
+		//Default the delta state
+		shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
+		addedPoison = null;
+		
+		addedFood = resetFood;
+		addedSegment = resetSegment;
+		resetFood = resetSegment = null;
+		
 		//Before the snake moves
-		if (currentDir == Direction.NONE) {
+		if (!running || currentDir == Direction.NONE) {
 			poisonGenerator.postpone(); //Poison will not start its generation
 			return;
-		} 
+		}
 		
 		Cell newHead = segments.getFirst().translate(1, currentDir);
 		//Eat food
@@ -118,13 +132,14 @@ public class Game {
 	public void reset() {
 		poisons.clear();
 		segments.clear();
-		segments.addFirst(addedSegment = new Cell(WIDTH / 2 , HEIGHT / 2));
+		resetSegment = new Cell(WIDTH / 2 , HEIGHT / 2);
+		segments.addFirst(resetSegment);
 		stomachSize = INITIAL_SIZE - 1; //stomach is initially all non-head segments
 		
 		running = true;
 		paused = false;
 		score = 0;
-		addedFood = food = generatePickup();
+		resetFood = food = generatePickup();
 		
 		previousDir = Direction.NONE;
 		currentDir = Direction.NONE;
@@ -171,29 +186,19 @@ public class Game {
 		return food;
 	}
 	public Cell getAddedFood() {
-		Cell temp = addedFood;
-		addedFood = null;
-		return temp;
+		return addedFood;
 	}
 	public Cell getAddedSegment() {
-		Cell temp = addedSegment;
-		addedSegment = null;
-		return temp;
+		return addedSegment;
 	}
 	public Cell getAddedPoison() {
-		Cell temp = addedPoison;
-		addedPoison = null;
-		return temp;
+		return addedPoison;
 	}
 	public boolean shouldRemoveSegment() {
-		boolean temp = shouldRemoveSegment;
-		shouldRemoveSegment = false;
-		return temp;
+		return shouldRemoveSegment;
 	}
 	public boolean shouldRemovePoison() {
-		boolean temp = shouldRemovePoison;
-		shouldRemovePoison = false;
-		return temp;
+		return shouldRemovePoison;
 	}
 	public Direction getCurrentDirection() {
 		return currentDir;
@@ -202,8 +207,6 @@ public class Game {
 		return previousDir;
 	}
 	public boolean onGameOver() {
-		boolean temp = onGameOver;
-		onGameOver = false;
-		return temp;
+		return onGameOver;
 	}
 }

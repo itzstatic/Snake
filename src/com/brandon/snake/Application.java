@@ -142,7 +142,7 @@ public class Application {
         	//Game Update Cycle
         	
         	input.pollNext();
-        	if (game.isRunning() && !game.isPaused()) {
+        	if (!game.isPaused()) {
         		game.update();
         		renderer.update();
         		game.straighten();

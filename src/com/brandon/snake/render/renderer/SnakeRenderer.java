@@ -12,7 +12,7 @@ import com.brandon.snake.graphics.Shader;
 import com.brandon.snake.graphics.texture.TextureAtlas;
 import com.brandon.snake.math.Matrix4f;
 import com.brandon.snake.math.Vector3f;
-import com.brandon.snake.render.GameOverHandler;
+import com.brandon.snake.render.renderer.snake.HeadBlinkAnimation;
 import com.brandon.snake.util.MeshUtil;
 
 public class SnakeRenderer extends CellRenderer {
@@ -45,11 +45,10 @@ public class SnakeRenderer extends CellRenderer {
 	//New direction: UP, DOWN, LEFT, RIGHT, NONE
 	private final static float[] HEAD_ROTATIONS = {90, -90, 180, 0, 0};
 	
-	private GameOverHandler gameOverHandler;
-	
 	//Parallel deques: First is Snake head, Last is Snake tail
 	private Deque<Matrix4f> models;
 	private Deque<Integer> indices;
+	private HeadBlinkAnimation headBlinkAnimation;
 	private Cell head;
 	
 	//Rendering resources
@@ -61,14 +60,14 @@ public class SnakeRenderer extends CellRenderer {
 	final private int GAME_HEIGHT;
 	
 	
-	public SnakeRenderer(GameOverHandler gameOverHandler, int gameWidth, int gameHeight) {
-		this.gameOverHandler = gameOverHandler;
-		GAME_WIDTH = gameWidth;
-		GAME_HEIGHT = gameHeight;
-		
+	public SnakeRenderer(int gameWidth, int gameHeight) {
 		models = new ArrayDeque<>();
 		indices = new ArrayDeque<>();
 		meshes = new Mesh[4];
+		headBlinkAnimation =  new HeadBlinkAnimation(models);
+		
+		GAME_WIDTH = gameWidth;
+		GAME_HEIGHT = gameHeight;
 	}
 	
 	@Override
@@ -89,15 +88,16 @@ public class SnakeRenderer extends CellRenderer {
 	
 	@Override
 	public void render(Game game) {
+		//Game over: head model is changed.
+		if (!game.isRunning()) {
+//			models.removeFirst();
+//			models.addFirst(gameOverHandler.getHeadModel());
+			headBlinkAnimation.update();
+		}
+		
 		texture.bind(0);
 		shader.bind();
 		shader.setUniform3f("color", COLOR);
-		
-		//Game over: head model is changed.
-		if (!game.isRunning()) {
-			models.removeFirst();
-			models.addFirst(gameOverHandler.getHeadModel());
-		}
 		
 		Iterator<Matrix4f> modelIterator = models.iterator();
 		Iterator<Integer> indexIterator = indices.iterator();
@@ -121,8 +121,13 @@ public class SnakeRenderer extends CellRenderer {
 			indices.removeLast();
 		}
 		
+//		if (game.onGameOver()) {
+//			gameOverHandler.gameOver(models.getFirst());
+//		}
 		if (game.onGameOver()) {
-			gameOverHandler.gameOver(models.getFirst());
+			System.out.println("Snake Renderer On Game Over!");
+			headBlinkAnimation.setHeadModel(models.getFirst());
+			headBlinkAnimation.start();
 		}
 		
 	}
