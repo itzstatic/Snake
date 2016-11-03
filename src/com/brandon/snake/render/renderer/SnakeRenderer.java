@@ -153,3 +153,4 @@ public class SnakeRenderer extends CellRenderer {
 	}
 	
 }
+

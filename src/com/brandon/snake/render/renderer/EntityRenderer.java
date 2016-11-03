@@ -60,8 +60,12 @@ public class EntityRenderer extends CellRenderer {
 		updateAnimations(game.isPaused());
 		
 		shader.bind();
-		shader.setUniform3f("color", POISON_COLOR);
 		
+		shader.setUniform3f("color", FOOD_COLOR);
+		shader.setUniformMat4f("model", foodAnimation.getModel());
+		mesh.render();
+		
+		shader.setUniform3f("color", POISON_COLOR);
 		for (Matrix4f model : poisonModels) {
 			shader.setUniformMat4f("model", model);
 			mesh.render();
@@ -74,10 +78,6 @@ public class EntityRenderer extends CellRenderer {
 			shader.setUniformMat4f("model", animation.getModel());
 			mesh.render();
 		}
-		
-		shader.setUniform3f("color", FOOD_COLOR);
-		shader.setUniformMat4f("model", foodAnimation.getModel());
-		mesh.render();
 	}
 	
 	@Override
