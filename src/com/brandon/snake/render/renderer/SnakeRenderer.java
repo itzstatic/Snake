@@ -59,12 +59,10 @@ public class SnakeRenderer extends CellRenderer {
 	final private int GAME_WIDTH;
 	final private int GAME_HEIGHT;
 	
-	
 	public SnakeRenderer(int gameWidth, int gameHeight) {
 		models = new ArrayDeque<>();
 		indices = new ArrayDeque<>();
 		meshes = new Mesh[4];
-		headBlinkAnimation =  new HeadBlinkAnimation(models);
 		
 		GAME_WIDTH = gameWidth;
 		GAME_HEIGHT = gameHeight;
@@ -88,7 +86,6 @@ public class SnakeRenderer extends CellRenderer {
 	
 	@Override
 	public void render(Game game) {
-		//Game over: head model is changed.
 		if (!game.isRunning()) {
 			headBlinkAnimation.update(false);
 		}
@@ -120,8 +117,7 @@ public class SnakeRenderer extends CellRenderer {
 		}
 		
 		if (game.onGameOver()) {
-			System.out.println("Snake Renderer On Game Over!");
-			headBlinkAnimation.setHeadModel(models.getFirst());
+			headBlinkAnimation = new HeadBlinkAnimation(models, models.getFirst());
 			headBlinkAnimation.start();
 		}
 		

@@ -73,6 +73,8 @@ public class Game {
 		addedPoison = poison;
 	}
 	
+	
+	
 	public void update() {
 		//Default the delta state
 		shouldRemovePoison = shouldRemoveSegment = onGameOver = false;

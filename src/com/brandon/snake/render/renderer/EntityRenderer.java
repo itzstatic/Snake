@@ -37,7 +37,8 @@ public class EntityRenderer extends CellRenderer {
 		GAME_WIDTH = gameWidth;
 		GAME_HEIGHT = gameHeight;
 		poisonModels = new ArrayDeque<>();
-		
+		addedPoisonModels = new ArrayDeque<>();
+		removedPoisonModels = new ArrayDeque<>();
 	}
 	
 	@Override
@@ -84,7 +85,7 @@ public class EntityRenderer extends CellRenderer {
 		if (game.shouldRemovePoison()) {
 			Matrix4f poisonModel;
 			if (poisonModels.isEmpty()) {
-				poisonModel = addedPoisonModels.peek().getModel();
+				poisonModel = addedPoisonModels.remove().getModel();
 			} else {
 				poisonModel = poisonModels.remove();
 			}

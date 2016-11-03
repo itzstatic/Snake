@@ -13,24 +13,23 @@ public class HeadBlinkAnimation extends Animation {
     final private static int VISIBLE = 0;
     final private static int INVISIBLE = 1;
     
-	private Deque<Matrix4f> models;
+    private Deque<Matrix4f> models;
 	private Matrix4f[] headModels;
 	private int current;
 	
 	
-	public HeadBlinkAnimation(Deque<Matrix4f> models) {
-		this.models = models;
+	public HeadBlinkAnimation(Deque<Matrix4f> models, Matrix4f headModel) {
 		headModels = new Matrix4f[2];
-	}
-	
-	public void setHeadModel(Matrix4f headModel) {
+		this.models = models;
+		
 		headModels[VISIBLE] = headModel;
+		headModels[INVISIBLE] = headModels[VISIBLE].mul(Matrix4f.rotateX(90));
+		current = VISIBLE;
 	}
 	
 	@Override
 	protected void onBegin() {
-		headModels[INVISIBLE] = headModels[VISIBLE].mul(Matrix4f.rotateX(90));
-		current = VISIBLE;
+		
 	}
 
 	@Override
@@ -38,7 +37,6 @@ public class HeadBlinkAnimation extends Animation {
 		current = 1 - current; //Toggles between 0 and 1
 		models.removeFirst();
 		models.addFirst(headModels[current]);
-		
 	}
 
 	@Override
