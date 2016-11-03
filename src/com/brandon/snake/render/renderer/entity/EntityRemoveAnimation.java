@@ -2,15 +2,12 @@ package com.brandon.snake.render.renderer.entity;
 
 import com.brandon.snake.math.Matrix4f;
 
-public class EntityAddAnimation extends EntityAnimation {
+public class EntityRemoveAnimation extends EntityAnimation {
 
-	final private static long DURATION = 250; //ms
-	final private static float SPEED = 90f / DURATION; //deg per ms
+	final private static long DURATION = 1000; //ms
 	
-	private Matrix4f translation;
-	
-	public EntityAddAnimation(Matrix4f model) {
-		super.model = translation = model;
+	public EntityRemoveAnimation(Matrix4f model) {
+		this.model = model;
 	}
 	
 	@Override
@@ -20,12 +17,13 @@ public class EntityAddAnimation extends EntityAnimation {
 
 	@Override
 	protected void onUpdate(float time, float deltaTime) {
-		model = model.mul(Matrix4f.rotateZ(SPEED * (float)deltaTime));
+		float scale = 1 - deltaTime / 2 / (float) (DURATION - time);
+		model = model.mul(Matrix4f.scale(scale, scale, 1));
 	}
 
 	@Override
 	protected void onEnd() {
-		model = translation;
+		
 	}
 
 	@Override
@@ -37,10 +35,8 @@ public class EntityAddAnimation extends EntityAnimation {
 	public long getDelay() {
 		return 0;
 	}
-	
 	@Override
 	public long getDuration() {
 		return DURATION;
 	}
-
 }

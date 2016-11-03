@@ -90,9 +90,7 @@ public class SnakeRenderer extends CellRenderer {
 	public void render(Game game) {
 		//Game over: head model is changed.
 		if (!game.isRunning()) {
-//			models.removeFirst();
-//			models.addFirst(gameOverHandler.getHeadModel());
-			headBlinkAnimation.update();
+			headBlinkAnimation.update(false);
 		}
 		
 		texture.bind(0);
@@ -121,9 +119,6 @@ public class SnakeRenderer extends CellRenderer {
 			indices.removeLast();
 		}
 		
-//		if (game.onGameOver()) {
-//			gameOverHandler.gameOver(models.getFirst());
-//		}
 		if (game.onGameOver()) {
 			System.out.println("Snake Renderer On Game Over!");
 			headBlinkAnimation.setHeadModel(models.getFirst());

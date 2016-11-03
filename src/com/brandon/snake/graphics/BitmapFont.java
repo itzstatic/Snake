@@ -251,6 +251,7 @@ public class BitmapFont {
 	public void destroyString(String s) {
 		if (meshCache.containsKey(s)) {
 			meshCache.remove(s).destroy();
+			originCache.remove(s);
 		}
 		
 	}

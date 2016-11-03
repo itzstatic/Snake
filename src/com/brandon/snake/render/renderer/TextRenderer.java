@@ -47,7 +47,7 @@ public class TextRenderer implements Renderer {
 		if (game.isPaused()) {
 			font.drawString("Paused", 2);
 		}
-		gameOverAnimation.update();
+		gameOverAnimation.update(false);
 	}
 	
 	@Override

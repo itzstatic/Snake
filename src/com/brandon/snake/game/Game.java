@@ -78,6 +78,7 @@ public class Game {
 		shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
 		addedPoison = null;
 		
+		//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
 		addedFood = resetFood;
 		addedSegment = resetSegment;
 		resetFood = resetSegment = null;

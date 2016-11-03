@@ -34,7 +34,7 @@ public class HeadBlinkAnimation extends Animation {
 	}
 
 	@Override
-	protected void onUpdate(float deltaTime) {
+	protected void onUpdate(float time, float deltaTime) {
 		current = 1 - current; //Toggles between 0 and 1
 		models.removeFirst();
 		models.addFirst(headModels[current]);

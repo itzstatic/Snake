@@ -37,11 +37,17 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import com.brandon.snake.game.Game;
+import com.brandon.snake.graphics.Animation;
 import com.brandon.snake.input.Input;
 import com.brandon.snake.render.GameRenderer;
  
@@ -166,6 +172,8 @@ public class Application {
     
     public static void main(String[] args) {
     	new Application().run();
+    	
     }
+    
  
 }
