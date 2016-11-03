@@ -2,7 +2,7 @@ package com.brandon.snake.graphics;
 
 public abstract class Animation {
 	protected abstract void onBegin();
-	protected abstract void onUpdate(float time, float deltaTime);
+	protected abstract void onUpdate(long time, long deltaTime);
 	protected abstract void onEnd();
 	
 	public abstract long getInitialDelay();
@@ -54,12 +54,14 @@ public abstract class Animation {
 				if (time >= 0 && !begun) { //begin if you haven't
 					onBegin();
 					begun = true;
-				} else if (getDuration() > 0 && time > getDuration()) { //stop/end if you need to
-					stop();
-				} else if (deltaTime >= getDelay()) { //update if you need to
+				}
+				if (deltaTime >= getDelay()) { //update if you need to
 					onUpdate(time, deltaTime);
 					lastUpdate = time;
 				}
+				if (getDuration() > 0 && time > getDuration()) { //stop/end if you need to
+					stop();
+				} 
 			}
 			
 		}

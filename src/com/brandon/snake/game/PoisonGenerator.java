@@ -1,37 +1,46 @@
-package com.brandon.snake;
+package com.brandon.snake.game;
 
 import com.brandon.snake.graphics.Animation;
 
-public class TestAnimation extends Animation {
+public class PoisonGenerator extends Animation {
 
+	final private static long DELAY = 2500; //ms 2500
+	
+	private Game game;
+	private float accumulated;
+	
+	public PoisonGenerator(Game game) {
+		this.game = game;
+	}
+	
 	@Override
 	protected void onBegin() {
-		System.out.println("It has begun!");
+		
 	}
 
 	@Override
 	protected void onUpdate(long time, long deltaTime) {
-		System.out.println("At " + time + ": Updated after " + deltaTime);
+		game.addPoison();
 	}
 
 	@Override
 	protected void onEnd() {
-		System.out.println("Ended.");
+
 	}
 
 	@Override
 	public long getInitialDelay() {
-		return 1000;
+		return 0;
 	}
 
 	@Override
 	public long getDelay() {
-		return 500;
+		return DELAY;
 	}
 
 	@Override
 	public long getDuration() {
-		return 5000;
+		return -1;
 	}
 
 }

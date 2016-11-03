@@ -19,7 +19,7 @@ public class EntityAddAnimation extends EntityAnimation {
 	}
 
 	@Override
-	protected void onUpdate(float time, float deltaTime) {
+	protected void onUpdate(long time, long deltaTime) {
 		model = model.mul(Matrix4f.rotateZ(SPEED * (float)deltaTime));
 	}
 

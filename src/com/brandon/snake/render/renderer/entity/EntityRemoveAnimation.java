@@ -16,14 +16,15 @@ public class EntityRemoveAnimation extends EntityAnimation {
 	}
 
 	@Override
-	protected void onUpdate(float time, float deltaTime) {
+	protected void onUpdate(long time, long deltaTime) {
 		float scale = 1 - deltaTime / 2 / (float) (DURATION - time);
 		model = model.mul(Matrix4f.scale(scale, scale, 1));
+		System.out.println("Remove animation t: " + time + "; dt: " + deltaTime);
 	}
 
 	@Override
 	protected void onEnd() {
-		
+		model = model.mul(Matrix4f.rotateX(90)); //Make it invisible
 	}
 
 	@Override

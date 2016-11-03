@@ -19,7 +19,7 @@ public class GameOverAnimation extends Animation {
 	}
 
 	@Override
-	protected void onUpdate(float time, float deltaTime) {
+	protected void onUpdate(long time, long deltaTime) {
 		font.drawString("Game Over!", 2);
 	}
 

@@ -4,10 +4,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
-import com.brandon.snake.util.schedule.ScheduledAction;
-import com.brandon.snake.util.schedule.Scheduler;
+import com.brandon.snake.graphics.Animation;
 
 public class Game {
 	//Game constants
@@ -16,8 +14,7 @@ public class Game {
 	final private static int GROWTH = 3; //The size added to the snake after eating
 	
 	//Poison generation
-	private Scheduler poisonScheduler;
-	private ScheduledAction poisonGenerator;
+	private Animation poisonGenerator;
 	
 	private Random random;
 	
@@ -58,72 +55,70 @@ public class Game {
 		random = new Random();
 		poisons = new ArrayDeque<>();
 		segments = new ArrayDeque<>();
-		poisonScheduler = new Scheduler();
-		poisonGenerator = poisonScheduler.scheduleAtFixedRate(
-			this::addPoison, 
-			POISON_GENERATION_DELAY, 
-			POISON_GENERATION_DELAY, 
-			TimeUnit.MILLISECONDS
-		);
+		poisonGenerator = new PoisonGenerator(this);
 	}
 	
-	private void addPoison() {
+	public void addPoison() {
 		Cell poison = generatePickup();
 		poisons.add(poison);
 		addedPoison = poison;
 	}
 	
 	public void update() {
-		//Default the delta state
-		shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
-		addedPoison = null;
-		
-		//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
-		addedFood = resetFood;
-		addedSegment = resetSegment;
-		resetFood = resetSegment = null; //Finish defaulting the delta state
-		
-		//Before the snake moves
-		if (!running || currentDir == Direction.NONE) {
-			poisonGenerator.postpone(); //Poison will not start its generation
-			return;
+		if (!paused) {
+			//Default the delta state
+			shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
+			addedPoison = null;
+			
+			//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
+			addedFood = resetFood;
+			addedSegment = resetSegment;
+			resetFood = resetSegment = null; //Finish defaulting the delta state
 		}
 		
-		Cell newHead = segments.getFirst().translate(1, currentDir);
-		//Eat food
-		if (food.equals(newHead)) {
-			stomachSize = GROWTH;
-			score++;
-			//Refresh poison
-			if (poisons.isEmpty()) {
-				poisonGenerator.postpone();
-			} else {
-				poisons.remove();
-				shouldRemovePoison = true;
+		poisonGenerator.update(paused);
+		
+		if (!paused) {	
+			//Before the snake moves
+			if (!running || currentDir == Direction.NONE) {
+				poisonGenerator.start(); //Poison will not start its generation
+				return;
 			}
-			//Generate new food
-			addedFood = food = generatePickup();
-		} else
-		//Snake death
-		
-		if (!isInBounds(newHead) || poisons.contains(newHead) || segments.contains(newHead)) {
-			running = false;
-			onGameOver = true;
-			return;
+			
+			Cell newHead = segments.getFirst().translate(1, currentDir);
+			//Eat food
+			if (food.equals(newHead)) {
+				stomachSize = GROWTH;
+				score++;
+				//Refresh poison
+				if (poisons.isEmpty()) {
+					poisonGenerator.start();
+				} else {
+					poisons.remove();
+					shouldRemovePoison = true;
+				}
+				//Generate new food
+				addedFood = food = generatePickup();
+			} else
+			//Snake death
+			
+			if (!isInBounds(newHead) || poisons.contains(newHead) || segments.contains(newHead)) {
+				running = false;
+				onGameOver = true;
+				return;
+			}
+			
+			//Inch snake forward
+			if (stomachSize == 0) {
+				segments.removeLast();
+				shouldRemoveSegment = true;
+			} else {
+				stomachSize--;
+			}
+			
+			segments.addFirst(newHead);
+			addedSegment = newHead;
 		}
-		
-		//Inch snake forward
-		if (stomachSize == 0) {
-			segments.removeLast();
-			shouldRemoveSegment = true;
-		} else {
-			stomachSize--;
-		}
-		
-		segments.addFirst(newHead);
-		addedSegment = newHead;
-		
-		poisonScheduler.update();
 	}
 	
 	public void straighten() {
