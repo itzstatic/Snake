@@ -1,6 +1,5 @@
 package com.brandon.snake.graphics;
 
-
 public abstract class Animation {
 	protected abstract void onBegin();
 	protected abstract void onUpdate(float time, float deltaTime);
@@ -32,13 +31,12 @@ public abstract class Animation {
 	 * Starts this Animation, possibly waiting for it to Begin.
 	 */
 	public void start() {
-		if (!started) {
-			time = - getInitialDelay();
-			lastTimeUpdate = System.currentTimeMillis();
-			
-			started = true;
-			begun = false;
-		}
+		time = - getInitialDelay();
+		lastTimeUpdate = System.currentTimeMillis();
+		lastUpdate = 0;
+		
+		started = true;
+		begun = false;
 	}
 	
 	/**

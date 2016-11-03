@@ -20,7 +20,7 @@ public class EntityRenderer extends CellRenderer {
 	final private static Vector3f POISON_COLOR = new Vector3f(1, 0, 0);
 	final private static Vector3f FOOD_COLOR = new Vector3f(0, 1, 0);
 	
-	private Queue<Matrix4f> poisonModels; //First is old poisons; Last is recent poisons
+	private Queue<Matrix4f> poisonModels;
 	private Queue<EntityAnimation> addedPoisonModels;
 	private Queue<EntityAnimation> removedPoisonModels;
 	
@@ -45,7 +45,7 @@ public class EntityRenderer extends CellRenderer {
 	public void init() {
 		shader = new Shader("res/shaders/entity.vs", "res/shaders/entity.fs");
 		shader.setUniformMat4f("proj", Matrix4f.orthographic(0, GAME_WIDTH, 0, GAME_HEIGHT, 1, -1));
-		mesh = MeshUtil.createMesh(-.5f, -.5f, .5f, .5f);
+		mesh = MeshUtil.createEntityMesh(-.5f, -.5f, .5f, .5f);
 	}
 	
 	@Override
@@ -57,23 +57,30 @@ public class EntityRenderer extends CellRenderer {
 	
 	@Override
 	public void render(Game game) {
-		updateAnimations(game.isPaused());
+		if (game.isRunning()) {
+			updateAnimations(game.isPaused());
+		}
 		
 		shader.bind();
 		
+		//Draw Food
 		shader.setUniform3f("color", FOOD_COLOR);
 		shader.setUniformMat4f("model", foodAnimation.getModel());
 		mesh.render();
 		
+		//Draw static poison models
 		shader.setUniform3f("color", POISON_COLOR);
 		for (Matrix4f model : poisonModels) {
 			shader.setUniformMat4f("model", model);
 			mesh.render();
 		}
+		//Draw added poison models
 		for (EntityAnimation animation : addedPoisonModels) {
 			shader.setUniformMat4f("model", animation.getModel());
 			mesh.render();
 		}
+		
+		//Draw removed poison models
 		for (EntityAnimation animation : removedPoisonModels) {
 			shader.setUniformMat4f("model", animation.getModel());
 			mesh.render();
@@ -115,6 +122,7 @@ public class EntityRenderer extends CellRenderer {
 	}
 	
 	private void updateAnimations(boolean paused) {
+		//Update added models, and move them to static models if they are done
 		Iterator<EntityAnimation> i = addedPoisonModels.iterator();	
 		while (i.hasNext()) {
 			EntityAnimation animation = i.next();

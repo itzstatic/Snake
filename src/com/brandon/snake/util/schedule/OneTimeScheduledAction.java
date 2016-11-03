@@ -1,6 +1,5 @@
 package com.brandon.snake.util.schedule;
 
-import java.sql.Time;
 
 public class OneTimeScheduledAction extends ScheduledAction {
 

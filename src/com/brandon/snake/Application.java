@@ -37,17 +37,11 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Scanner;
-
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import com.brandon.snake.game.Game;
-import com.brandon.snake.graphics.Animation;
 import com.brandon.snake.input.Input;
 import com.brandon.snake.render.GameRenderer;
  
@@ -148,13 +142,15 @@ public class Application {
         	//Game Update Cycle
         	
         	input.pollNext();
+        	
         	if (!game.isPaused()) {
         		game.update();
         		renderer.update();
         		game.straighten();
         	}
         	
-            while (System.currentTimeMillis() - initialTime < UPDATE_DELAY) {
+            
+        	while (System.currentTimeMillis() - initialTime < UPDATE_DELAY) {
             	//UI Update Cycle
             	glfwPollEvents();
             	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

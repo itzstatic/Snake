@@ -73,8 +73,6 @@ public class Game {
 		addedPoison = poison;
 	}
 	
-	
-	
 	public void update() {
 		//Default the delta state
 		shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
@@ -83,7 +81,7 @@ public class Game {
 		//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
 		addedFood = resetFood;
 		addedSegment = resetSegment;
-		resetFood = resetSegment = null;
+		resetFood = resetSegment = null; //Finish defaulting the delta state
 		
 		//Before the snake moves
 		if (!running || currentDir == Direction.NONE) {
