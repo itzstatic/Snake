@@ -17,7 +17,7 @@ public class Game {
 
 	private Random random;
 	
-	//General game state
+	//Persistent game state
 	private Queue<Cell> poisons;
 	private Deque<Cell> segments; //First is snake head, Last is snake tail
 	private int stomachSize;
@@ -34,7 +34,7 @@ public class Game {
 	private Cell addedFood;
 	private Cell addedSegment;
 	private Cell addedPoison;
-	private boolean shouldRemoveSegment;
+	private Cell removedSegment;
 	private Cell removedPoison;
 	private boolean onGameOver;
 	
@@ -61,8 +61,9 @@ public class Game {
 	public void update() {
 		if (!paused) {
 			//Default the delta state
-			shouldRemoveSegment = onGameOver = false;
-			removedPoison = addedPoison = addedFood = addedSegment = null;
+			onGameOver = false;
+			removedPoison = removedSegment = addedPoison 
+					= addedFood = addedSegment = null;
 		}
 		
 		poisonGenerator.update(paused);
@@ -87,7 +88,7 @@ public class Game {
 				}
 				//Generate new food
 				addedFood = food = generatePickup();
-			} else
+			} else // <-- Note the else
 			//Snake death
 			
 			if (!isInBounds(newHead) || poisons.contains(newHead) || segments.contains(newHead)) {
@@ -98,14 +99,12 @@ public class Game {
 			
 			//Inch snake forward
 			if (stomachSize == 0) {
-				segments.removeLast();
-				shouldRemoveSegment = true;
+				removedSegment = segments.removeLast();
 			} else {
 				stomachSize--;
 			}
 			
-			segments.addFirst(newHead);
-			addedSegment = newHead;
+			segments.addFirst(addedSegment = newHead);
 		}
 	}
 	
@@ -116,8 +115,7 @@ public class Game {
 	public void reset() {
 		poisons.clear();
 		segments.clear();
-		addedSegment = new Cell(WIDTH / 2 , HEIGHT / 2);
-		segments.addFirst(addedSegment);
+		segments.addFirst(addedSegment = new Cell(WIDTH / 2 , HEIGHT / 2));
 		stomachSize = INITIAL_SIZE - 1; //stomach is initially all non-head segments
 		
 		running = true;
@@ -178,8 +176,8 @@ public class Game {
 	public Cell getAddedPoison() {
 		return addedPoison;
 	}
-	public boolean shouldRemoveSegment() {
-		return shouldRemoveSegment;
+	public Cell getRemovedSegment() {
+		return removedSegment;
 	}
 	public Cell getRemovedPoison() {
 		return removedPoison;

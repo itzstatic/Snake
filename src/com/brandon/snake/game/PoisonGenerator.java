@@ -7,7 +7,6 @@ public class PoisonGenerator extends Animation {
 	final private static long DELAY = 2500; //ms 2500
 	
 	private Game game;
-	private float accumulated;
 	
 	public PoisonGenerator(Game game) {
 		this.game = game;

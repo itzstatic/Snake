@@ -81,7 +81,7 @@ public class SnakeRenderer implements Renderer {
 			);
 		}
 		
-		if (game.shouldRemoveSegment()) {
+		if (game.getRemovedSegment() != null) {
 			models.removeLast();
 		}
 		
