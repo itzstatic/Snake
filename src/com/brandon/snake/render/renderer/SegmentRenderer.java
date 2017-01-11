@@ -1,7 +1,7 @@
 package com.brandon.snake.render.renderer;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.brandon.snake.game.Cell;
 import com.brandon.snake.game.Direction;
@@ -15,12 +15,11 @@ import com.brandon.snake.render.Renderer;
 import com.brandon.snake.render.renderer.snake.SegmentModel;
 import com.brandon.snake.util.MeshUtil;
 
-public class SnakeRenderer implements Renderer {
+public class SegmentRenderer implements Renderer {
 	//Constants
 	final private static Vector3f COLOR = new Vector3f(0, 1, 1);
 	
-	//Parallel deques: First is Snake head, Last is Snake tail
-	private Deque<SegmentModel> models;
+	private Map<Cell, SegmentModel> models;
 	private Cell head;
 	
 	//Rendering resources
@@ -31,8 +30,8 @@ public class SnakeRenderer implements Renderer {
 	final private int GAME_WIDTH;
 	final private int GAME_HEIGHT;
 	
-	public SnakeRenderer(int gameWidth, int gameHeight) {
-		models = new ArrayDeque<>();
+	public SegmentRenderer(int gameWidth, int gameHeight) {
+		models = new HashMap<>();
 		meshes = new Mesh[4];
 		
 		GAME_WIDTH = gameWidth;
@@ -52,7 +51,7 @@ public class SnakeRenderer implements Renderer {
 	@Override
 	public void reset(Game game) {
 		models.clear();
-		add(
+		addSegment(
 			game.getPreviousDirection(), 
 			game.getCurrentDirection(), 
 			game.getAddedSegment()
@@ -65,7 +64,7 @@ public class SnakeRenderer implements Renderer {
 		shader.bind();
 		shader.setUniform3f("color", COLOR);
 		
-		for (SegmentModel model : models) {
+		for (SegmentModel model : models.values()) {
 			model.render(shader, meshes, game.isPaused());
 		}
 	}
@@ -74,19 +73,20 @@ public class SnakeRenderer implements Renderer {
 	public void update(Game game) {
 		Cell segment = game.getAddedSegment();
 		if (segment != null) {
-			add(
+			addSegment(
 				game.getPreviousDirection(), 
 				game.getCurrentDirection(), 
 				segment
 			);
 		}
 		
-		if (game.getRemovedSegment() != null) {
-			models.removeLast();
+		segment = game.getRemovedSegment();
+		if (segment != null) {
+			models.remove(segment);
 		}
 		
 		if (game.onGameOver()) {
-			models.getFirst().blink();
+			models.get(head).blink();
 		}
 		
 	}
@@ -101,20 +101,19 @@ public class SnakeRenderer implements Renderer {
 		}
 	}
 	
-	private void add(Direction previous, Direction current, Cell segment) {
+	private void addSegment(Direction previous, Direction current, Cell segment) {
 		int old = previous.getValue();
 		int nu = current.getValue();
 
 		//Not on the first draw
 		if (!models.isEmpty()) {
-			//Redraw old head as body (Rotate model, set texture index)
-			models.removeFirst();
-			models.addFirst(SegmentModel.createBodySegment(head, old, nu));
+			//Redraw old head as body
+			models.replace(head, SegmentModel.createBodySegment(head, old, nu));
 		}
 		
 		//Draw new head
+		models.put(segment, SegmentModel.createHeadSegment(segment, nu));
 		head = segment;
-		models.addFirst(SegmentModel.createHeadSegment(head, nu));
 	}
 	
 }

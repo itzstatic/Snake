@@ -2,7 +2,7 @@ package com.brandon.snake.render;
 
 import com.brandon.snake.game.Game;
 import com.brandon.snake.render.renderer.EntityRenderer;
-import com.brandon.snake.render.renderer.SnakeRenderer;
+import com.brandon.snake.render.renderer.SegmentRenderer;
 import com.brandon.snake.render.renderer.TextRenderer;
 
 public class GameRenderer {
@@ -14,7 +14,7 @@ public class GameRenderer {
 		this.game = game;
 		
 		renderers = new Renderer[]{
-			new SnakeRenderer(gameWidth, gameHeight),
+			new SegmentRenderer(gameWidth, gameHeight),
 			new EntityRenderer(gameWidth, gameHeight),
 			new TextRenderer(windowWidth, windowHeight)
 		};
