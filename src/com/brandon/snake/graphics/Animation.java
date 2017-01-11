@@ -16,7 +16,8 @@ public abstract class Animation {
 
 	private long time;
 	private boolean started;
-	private boolean begun;
+	private boolean animating;
+	private boolean finished;
 	
 	/**
 	 * As measured in real time.
@@ -27,6 +28,10 @@ public abstract class Animation {
 	 */
 	private long lastUpdate;
 	
+	public boolean isFinished() {
+		return finished;
+	}
+	
 	/**
 	 * Starts this Animation, possibly waiting for it to Begin.
 	 */
@@ -36,7 +41,8 @@ public abstract class Animation {
 		lastUpdate = 0;
 		
 		started = true;
-		begun = false;
+		animating = false;
+		finished = false;
 	}
 	
 	/**
@@ -51,9 +57,9 @@ public abstract class Animation {
 			long deltaTime = time - lastUpdate;
 			
 			if (!paused) {
-				if (time >= 0 && !begun) { //begin if you haven't
+				if (time >= 0 && !animating) { //begin if you haven't
 					onBegin();
-					begun = true;
+					animating = true;
 				}
 				if (deltaTime >= getDelay()) { //update if you need to
 					onUpdate(time, deltaTime);
@@ -74,6 +80,7 @@ public abstract class Animation {
 	public void stop() {
 		if (started) {
 			started = false;
+			finished = true;
 			onEnd();
 		}
 	}

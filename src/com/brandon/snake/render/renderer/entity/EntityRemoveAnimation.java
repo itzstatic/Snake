@@ -1,13 +1,16 @@
 package com.brandon.snake.render.renderer.entity;
 
+import com.brandon.snake.graphics.Animation;
 import com.brandon.snake.math.Matrix4f;
 
-public class EntityRemoveAnimation extends EntityAnimation {
+public class EntityRemoveAnimation extends Animation {
 
 	final private static long DURATION = 1000; //ms
 	
-	public EntityRemoveAnimation(Matrix4f model) {
-		this.model = model;
+	private Matrix4f[] modelPtr;
+	
+	public EntityRemoveAnimation(Matrix4f[] modelPtr) {
+		this.modelPtr = modelPtr;
 	}
 	
 	@Override
@@ -18,13 +21,12 @@ public class EntityRemoveAnimation extends EntityAnimation {
 	@Override
 	protected void onUpdate(long time, long deltaTime) {
 		float scale = 1 - deltaTime / 2 / (float) (DURATION - time);
-		model = model.mul(Matrix4f.scale(scale, scale, 1));
-		System.out.println("Remove animation t: " + time + "; dt: " + deltaTime);
+		modelPtr[0] = modelPtr[0].mul(Matrix4f.scale(scale, scale, 1));
 	}
 
 	@Override
 	protected void onEnd() {
-		model = model.mul(Matrix4f.rotateX(90)); //Make it invisible
+		modelPtr[0] = modelPtr[0].mul(Matrix4f.rotateX(90)); //Make it invisible
 	}
 
 	@Override

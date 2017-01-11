@@ -1,11 +1,9 @@
 package com.brandon.snake.render.renderer.snake;
 
-import java.util.Deque;
-
 import com.brandon.snake.graphics.Animation;
 import com.brandon.snake.math.Matrix4f;
 
-public class HeadBlinkAnimation extends Animation {
+public class SegmentBlinkAnimation extends Animation {
 
 	final private static long DURATION = 1100; //ms
     final private static long DELAY = 120; //ms
@@ -13,16 +11,14 @@ public class HeadBlinkAnimation extends Animation {
     final private static int VISIBLE = 0;
     final private static int INVISIBLE = 1;
     
-    private Deque<Matrix4f> models;
 	private Matrix4f[] headModels;
 	private int current;
+	private Matrix4f[] modelPtr;
 	
-	
-	public HeadBlinkAnimation(Deque<Matrix4f> models, Matrix4f headModel) {
+	public SegmentBlinkAnimation(Matrix4f[] modelPtr) {
+		this.modelPtr = modelPtr;
 		headModels = new Matrix4f[2];
-		this.models = models;
-		
-		headModels[VISIBLE] = headModel;
+		headModels[VISIBLE] = modelPtr[0];
 		headModels[INVISIBLE] = headModels[VISIBLE].mul(Matrix4f.rotateX(90));
 		current = VISIBLE;
 	}
@@ -35,14 +31,12 @@ public class HeadBlinkAnimation extends Animation {
 	@Override
 	protected void onUpdate(long time, long deltaTime) {
 		current = 1 - current; //Toggles between 0 and 1
-		models.removeFirst();
-		models.addFirst(headModels[current]);
+		modelPtr[0] = headModels[current];
 	}
 
 	@Override
 	protected void onEnd() {
-		models.removeFirst();
-		models.addFirst(headModels[VISIBLE]);
+		modelPtr[0] = headModels[VISIBLE];
 	}
 
 	@Override

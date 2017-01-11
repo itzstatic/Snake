@@ -41,7 +41,7 @@ public class Game {
 	private Cell addedSegment;
 	private Cell addedPoison;
 	private boolean shouldRemoveSegment;
-	private boolean shouldRemovePoison;
+	private Cell removedPoison;
 	private boolean onGameOver;
 	
 	//Instance constants
@@ -67,12 +67,13 @@ public class Game {
 	public void update() {
 		if (!paused) {
 			//Default the delta state
-			shouldRemovePoison = shouldRemoveSegment = onGameOver = false;
-			addedPoison = null;
+			shouldRemoveSegment = onGameOver = false;
+			removedPoison = addedPoison = null;
 			
 			//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
 			addedFood = resetFood;
 			addedSegment = resetSegment;
+			
 			resetFood = resetSegment = null; //Finish defaulting the delta state
 		}
 		
@@ -94,8 +95,7 @@ public class Game {
 				if (poisons.isEmpty()) {
 					poisonGenerator.start();
 				} else {
-					poisons.remove();
-					shouldRemovePoison = true;
+					removedPoison = poisons.remove();
 				}
 				//Generate new food
 				addedFood = food = generatePickup();
@@ -193,8 +193,8 @@ public class Game {
 	public boolean shouldRemoveSegment() {
 		return shouldRemoveSegment;
 	}
-	public boolean shouldRemovePoison() {
-		return shouldRemovePoison;
+	public Cell getRemovedPoison() {
+		return removedPoison;
 	}
 	public Direction getCurrentDirection() {
 		return currentDir;

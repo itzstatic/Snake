@@ -1,8 +1,7 @@
 package com.brandon.snake.render.renderer;
 
-import java.util.ArrayDeque;
-import java.util.Iterator;
-import java.util.Queue;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.brandon.snake.game.Cell;
 import com.brandon.snake.game.Game;
@@ -10,21 +9,17 @@ import com.brandon.snake.graphics.Mesh;
 import com.brandon.snake.graphics.Shader;
 import com.brandon.snake.math.Matrix4f;
 import com.brandon.snake.math.Vector3f;
-import com.brandon.snake.render.renderer.entity.EntityAddAnimation;
-import com.brandon.snake.render.renderer.entity.EntityAnimation;
-import com.brandon.snake.render.renderer.entity.EntityRemoveAnimation;
+import com.brandon.snake.render.Renderer;
+import com.brandon.snake.render.renderer.entity.EntityModel;
 import com.brandon.snake.util.MeshUtil;
 
-public class EntityRenderer extends CellRenderer {
+public class EntityRenderer implements Renderer {
 	//Constants
 	final private static Vector3f POISON_COLOR = new Vector3f(1, 0, 0);
 	final private static Vector3f FOOD_COLOR = new Vector3f(0, 1, 0);
 	
-	private Queue<Matrix4f> poisonModels;
-	private Queue<EntityAnimation> addedPoisonModels;
-	private Queue<EntityAnimation> removedPoisonModels;
-	
-	private EntityAnimation foodAnimation;
+	private Map<Cell, EntityModel> poisonModels;
+	private EntityModel foodModel;
 	
 	//Rendering resources
 	private Shader shader;
@@ -36,9 +31,7 @@ public class EntityRenderer extends CellRenderer {
 	public EntityRenderer(int gameWidth, int gameHeight) {
 		GAME_WIDTH = gameWidth;
 		GAME_HEIGHT = gameHeight;
-		poisonModels = new ArrayDeque<>();
-		addedPoisonModels = new ArrayDeque<>();
-		removedPoisonModels = new ArrayDeque<>();
+		poisonModels = new HashMap<>();
 	}
 	
 	@Override
@@ -51,67 +44,41 @@ public class EntityRenderer extends CellRenderer {
 	@Override
 	public void reset() {
 		poisonModels.clear();
-		addedPoisonModels.clear();
-		removedPoisonModels.clear();
 	}
 	
 	@Override
 	public void render(Game game) {
-		if (game.isRunning()) {
-			updateAnimations(game.isPaused());
-		}
-		
+		boolean paused = game.isPaused();
 		shader.bind();
 		
 		//Draw Food
 		shader.setUniform3f("color", FOOD_COLOR);
-		shader.setUniformMat4f("model", foodAnimation.getModel());
-		mesh.render();
+		foodModel.render(shader, mesh, paused);
 		
-		//Draw static poison models
+		//Draw poison models
 		shader.setUniform3f("color", POISON_COLOR);
-		for (Matrix4f model : poisonModels) {
-			shader.setUniformMat4f("model", model);
-			mesh.render();
-		}
-		//Draw added poison models
-		for (EntityAnimation animation : addedPoisonModels) {
-			shader.setUniformMat4f("model", animation.getModel());
-			mesh.render();
-		}
-		
-		//Draw removed poison models
-		for (EntityAnimation animation : removedPoisonModels) {
-			shader.setUniformMat4f("model", animation.getModel());
-			mesh.render();
-		}
+		poisonModels.values().removeIf(e -> renderAndRemove(e, shader, mesh, paused));
 	}
-	
+
+	private boolean renderAndRemove(EntityModel poison, Shader s, Mesh m, boolean paused) {
+		poison.render(shader, mesh, paused);
+		return poison.isDoneRemoving();
+	}
 	@Override
 	public void update(Game game) {
-		if (game.shouldRemovePoison()) {
-			Matrix4f poisonModel;
-			if (poisonModels.isEmpty()) {
-				poisonModel = addedPoisonModels.remove().getModel();
-			} else {
-				poisonModel = poisonModels.remove();
-			}
-			EntityAnimation poisonAnimation = new EntityRemoveAnimation(poisonModel);
-			removedPoisonModels.add(poisonAnimation);
-			poisonAnimation.start();
-		}
-		
 		Cell poison = game.getAddedPoison();
 		if (poison != null) {
-			EntityAnimation poisonAnimation = new EntityAddAnimation(getCellTranslation(poison));
-			poisonAnimation.start();
-			addedPoisonModels.add(poisonAnimation);
+			poisonModels.put(poison, new EntityModel(poison));
+		}
+		
+		poison = game.getRemovedPoison();
+		if (poison != null) {
+			poisonModels.get(poison).beginRemoving();
 		}
 		
 		Cell food = game.getAddedFood();
 		if (food != null) {
-			foodAnimation = new EntityAddAnimation(getCellTranslation(food));
-			foodAnimation.start();
+			foodModel = new EntityModel(food);
 		}
 	}
 	
@@ -119,20 +86,5 @@ public class EntityRenderer extends CellRenderer {
 	public void destroy() {
 		shader.destroy();
 		mesh.destroy();
-	}
-	
-	private void updateAnimations(boolean paused) {
-		//Update added models, and move them to static models if they are done
-		Iterator<EntityAnimation> i = addedPoisonModels.iterator();	
-		while (i.hasNext()) {
-			EntityAnimation animation = i.next();
-			if (animation.update(paused)) {
-				i.remove();
-				poisonModels.add(animation.getModel());
-			}
-		}
-		
-		removedPoisonModels.removeIf(e -> e.update(paused));
-		foodAnimation.update(paused);
 	}
 }
