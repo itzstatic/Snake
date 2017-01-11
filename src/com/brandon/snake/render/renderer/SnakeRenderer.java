@@ -2,7 +2,6 @@ package com.brandon.snake.render.renderer;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Iterator;
 
 import com.brandon.snake.game.Cell;
 import com.brandon.snake.game.Direction;
@@ -13,7 +12,6 @@ import com.brandon.snake.graphics.texture.TextureAtlas;
 import com.brandon.snake.math.Matrix4f;
 import com.brandon.snake.math.Vector3f;
 import com.brandon.snake.render.Renderer;
-import com.brandon.snake.render.renderer.snake.SegmentBlinkAnimation;
 import com.brandon.snake.render.renderer.snake.SegmentModel;
 import com.brandon.snake.util.MeshUtil;
 
@@ -52,8 +50,13 @@ public class SnakeRenderer implements Renderer {
 	}
 	
 	@Override
-	public void reset() {
+	public void reset(Game game) {
 		models.clear();
+		add(
+			game.getPreviousDirection(), 
+			game.getCurrentDirection(), 
+			game.getAddedSegment()
+		);
 	}
 	
 	@Override
@@ -71,7 +74,11 @@ public class SnakeRenderer implements Renderer {
 	public void update(Game game) {
 		Cell segment = game.getAddedSegment();
 		if (segment != null) {
-			add(game.getPreviousDirection(), game.getCurrentDirection(), segment);
+			add(
+				game.getPreviousDirection(), 
+				game.getCurrentDirection(), 
+				segment
+			);
 		}
 		
 		if (game.shouldRemoveSegment()) {

@@ -32,7 +32,7 @@ public class TextRenderer implements Renderer {
 	}
 	
 	@Override
-	public void reset() {
+	public void reset(Game game) {
 		score = 0;
 		gameOverAnimation.stop();
 	}

@@ -42,8 +42,9 @@ public class EntityRenderer implements Renderer {
 	}
 	
 	@Override
-	public void reset() {
+	public void reset(Game game) {
 		poisonModels.clear();
+		foodModel = new EntityModel(game.getFood());
 	}
 	
 	@Override

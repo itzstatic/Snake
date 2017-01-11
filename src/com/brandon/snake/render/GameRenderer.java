@@ -28,7 +28,7 @@ public class GameRenderer {
 
 	public void reset() {
 		for (Renderer renderer : renderers) {
-			renderer.reset();
+			renderer.reset(game);
 		}
 	}
 

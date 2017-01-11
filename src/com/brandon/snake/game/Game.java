@@ -9,13 +9,12 @@ import com.brandon.snake.graphics.Animation;
 
 public class Game {
 	//Game constants
-	final private static long POISON_GENERATION_DELAY = 2500; //ms 2500
 	final private static int INITIAL_SIZE = 3; //Of the snake before any food
 	final private static int GROWTH = 3; //The size added to the snake after eating
 	
 	//Poison generation
 	private Animation poisonGenerator;
-	
+
 	private Random random;
 	
 	//General game state
@@ -28,11 +27,6 @@ public class Game {
 	private Cell food;
 	private Direction previousDir; //Directions should never be null
 	private Direction currentDir;
-	
-	//Reset changes this, but it is represented by delta state.
-	//So reset queues it so that update can change it.
-	private Cell resetFood;
-	private Cell resetSegment;
 	
 	//Delta game state (Defaults at beginning of update)
 	//Can only be set inside of update method
@@ -68,13 +62,7 @@ public class Game {
 		if (!paused) {
 			//Default the delta state
 			shouldRemoveSegment = onGameOver = false;
-			removedPoison = addedPoison = null;
-			
-			//Food and initial segments are "added" in reset, but to be truly added, they have to be added in update.
-			addedFood = resetFood;
-			addedSegment = resetSegment;
-			
-			resetFood = resetSegment = null; //Finish defaulting the delta state
+			removedPoison = addedPoison = addedFood = addedSegment = null;
 		}
 		
 		poisonGenerator.update(paused);
@@ -128,14 +116,14 @@ public class Game {
 	public void reset() {
 		poisons.clear();
 		segments.clear();
-		resetSegment = new Cell(WIDTH / 2 , HEIGHT / 2);
-		segments.addFirst(resetSegment);
+		addedSegment = new Cell(WIDTH / 2 , HEIGHT / 2);
+		segments.addFirst(addedSegment);
 		stomachSize = INITIAL_SIZE - 1; //stomach is initially all non-head segments
 		
 		running = true;
 		paused = false;
 		score = 0;
-		resetFood = food = generatePickup();
+		addedFood = food = generatePickup();
 		
 		previousDir = Direction.NONE;
 		currentDir = Direction.NONE;
