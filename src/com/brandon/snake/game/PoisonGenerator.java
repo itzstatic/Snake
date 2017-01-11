@@ -1,5 +1,7 @@
 package com.brandon.snake.game;
 
+import java.util.Random;
+
 import com.brandon.snake.graphics.Animation;
 
 public class PoisonGenerator extends Animation {
@@ -7,6 +9,7 @@ public class PoisonGenerator extends Animation {
 	final private static long DELAY = 2500; //ms 2500
 	
 	private Game game;
+	private Random rand;
 	
 	public PoisonGenerator(Game game) {
 		this.game = game;

@@ -5,7 +5,7 @@ import com.brandon.snake.math.Matrix4f;
 
 public class EntityAddAnimation extends Animation {
 
-	final private static long DURATION = 1000; //ms 250
+	final private static long DURATION = 250; //ms 250
 	final private static float ANGLE = 90f; //deg per ms
 	
 	private Matrix4f[] modelPtr;

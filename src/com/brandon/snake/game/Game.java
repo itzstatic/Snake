@@ -2,8 +2,10 @@ package com.brandon.snake.game;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 
 import com.brandon.snake.graphics.Animation;
 
@@ -14,7 +16,6 @@ public class Game {
 	
 	//Poison generation
 	private Animation poisonGenerator;
-
 	private Random random;
 	
 	//Persistent game state
@@ -145,12 +146,19 @@ public class Game {
 		return 0 <= x && x < WIDTH && 0 <= y && y < HEIGHT;
 	}
 	
+	private boolean isAroundHead(Cell c) {
+		return segments.getFirst().distance(c) <= 1;
+	}
+	
 	private Cell generatePickup() {
 		Cell c;
 		
 		do {
 			c = new Cell(random.nextInt(WIDTH), random.nextInt(HEIGHT));
-		} while (c.equals(food) || poisons.contains(c) || segments.contains(c));
+		} while (c.equals(food) 
+				|| poisons.contains(c) 
+				|| segments.contains(c)
+				|| isAroundHead(c));
 		
 		return c;
 	}

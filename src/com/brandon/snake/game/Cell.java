@@ -31,6 +31,12 @@ public class Cell {
 	public Cell translate(int dx, int dy) {
 		return new Cell(x + dx, y + dy);
 	}
+	
+	public int distance(Cell c) {
+		int dx = Math.abs(x - c.x);
+		int dy = Math.abs(y - c.y);
+		return Math.max(dx, dy);
+	}
 
 	public int getX() {
 		return x;
