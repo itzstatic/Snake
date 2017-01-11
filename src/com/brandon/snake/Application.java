@@ -63,16 +63,25 @@ public class Application {
     final private static int GAME_HEIGHT = 16;
     
     public Application() {
-    	input = new Input(
-    		GLFW_KEY_W, 
-    		GLFW_KEY_S, 
-        	GLFW_KEY_A, 
-        	GLFW_KEY_D, 
-        	GLFW_KEY_P, 
-        	GLFW_KEY_ENTER,
-        	GLFW_KEY_ESCAPE
-        );                	
     	game = new Game(GAME_WIDTH, GAME_HEIGHT);
+    	renderer = new GameRenderer(
+            game,
+            GAME_WIDTH,
+            GAME_HEIGHT,
+            WINDOW_WIDTH, 
+            WINDOW_HEIGHT
+        );
+    	input = new Input(
+    		game,
+    		renderer,
+        	GLFW_KEY_W, 
+        	GLFW_KEY_S, 
+           	GLFW_KEY_A, 
+            GLFW_KEY_D, 
+            GLFW_KEY_P, 
+            GLFW_KEY_ENTER,
+            GLFW_KEY_ESCAPE
+        );      
     }
     
     public void run() {
@@ -101,14 +110,6 @@ public class Application {
         
         window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Snake", NULL, NULL);
         
-        renderer = new GameRenderer(
-        	game,
-        	GAME_WIDTH,
-        	GAME_HEIGHT,
-        	WINDOW_WIDTH, 
-        	WINDOW_HEIGHT
-        );
-        
         glfwSetKeyCallback(window, input);
         
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -127,7 +128,6 @@ public class Application {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_ALPHA);
         
-        input.init(game, renderer);
         renderer.init();
         
         game.reset();
@@ -139,8 +139,7 @@ public class Application {
         while (!glfwWindowShouldClose(window)) {
         	initialTime = System.currentTimeMillis();
         	
-        	//Game Update Cycle
-        	
+        	//Game Update Cycle        	
         	input.pollNext();
         	game.update();
         	if (!game.isPaused()) {
@@ -148,20 +147,19 @@ public class Application {
         		game.straighten();
         	}
         	
-            
         	while (System.currentTimeMillis() - initialTime < UPDATE_DELAY) {
-            	//UI Update Cycle
-            	glfwPollEvents();
-            	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                renderer.render();
-                
-                glfwSwapBuffers(window);
-            	try {
-    				Thread.sleep(1);
-    			} catch (InterruptedException e) {
-    				e.printStackTrace();
-    			}
-            }
+        		//UI Update Cycle
+        		glfwPollEvents();
+        		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        		renderer.render();
+        		
+        		glfwSwapBuffers(window);
+        		try {
+        			Thread.sleep(1);
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        	}
         }
 	}
     

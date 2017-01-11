@@ -2,10 +2,8 @@ package com.brandon.snake.game;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Set;
 
 import com.brandon.snake.graphics.Animation;
 

@@ -26,8 +26,12 @@ public class Input implements GLFWKeyCallbackI {
 	private Queue<Direction> moves;
 	
 	
-	public Input(int up, int down, int left, int right, int pause, int reset, int exit) {
+	public Input(Game game, GameRenderer renderer, int up, int down, int left, int right, int pause, int reset, int exit) {
 		moves = new ArrayDeque<>();
+		
+		this.game = game;
+		this.renderer = renderer;
+		
 		keyUp = up;
 		keyDown = down;
 		keyLeft = left;
@@ -36,11 +40,6 @@ public class Input implements GLFWKeyCallbackI {
 		keyPause = pause;
 		keyReset = reset;
 		keyExit = exit;
-	}
-	
-	public void init(Game game, GameRenderer renderer) {
-		this.game = game;
-		this.renderer = renderer;
 	}
 	
 	public void pollNext() {
