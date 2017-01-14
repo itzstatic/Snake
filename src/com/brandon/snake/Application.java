@@ -37,6 +37,8 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.File;
+
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -102,6 +104,8 @@ public class Application {
     }
  
     private void init() {
+    	System.setProperty("java.library.path", new File("native").getAbsolutePath());
+    	
         GLFWErrorCallback.createPrint(System.err).set();
      	if (!glfwInit())
      		throw new IllegalStateException("Unable to initialize GLFW");
